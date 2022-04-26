@@ -46,9 +46,12 @@ export default async function server(
       return;
     }
 
-    // if all good, generate a signed NFT payload
+    // If all the checks pass, begin generating the signature...
+
+    // This is to generate the page number based on how many pages have been minted already
     const pageNumber = (await nftCollection.totalSupply()).add(1);
 
+    // Generate the signature for the page NFT
     const signedPayload = await nftCollection.signature.generate({
       to: authorAddress,
       metadata: {
@@ -57,6 +60,7 @@ export default async function server(
       },
     });
 
+    // Return back the signedPayload to the client.
     res.status(200).json({
       signedPayload: JSON.parse(JSON.stringify(signedPayload)),
     });

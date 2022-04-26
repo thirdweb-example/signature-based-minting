@@ -45,6 +45,7 @@ const Home: NextPage = () => {
   // We send in the address of the current user, and the text they entered as part of the request.
   const mintWithSignature = async () => {
     try {
+      // Make a request to /api/server
       const signedPayloadReq = await fetch(`/api/server`, {
         method: "POST",
         body: JSON.stringify({
@@ -53,6 +54,7 @@ const Home: NextPage = () => {
         }),
       });
 
+      // Grab the JSON from the response
       const json = await signedPayloadReq.json();
 
       // If the request failed, we'll show an error.
