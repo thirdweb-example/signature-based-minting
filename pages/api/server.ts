@@ -70,6 +70,6 @@ export default async function server(
       signedPayload: JSON.parse(JSON.stringify(signedPayload)),
     });
   } catch (e) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: `Server error ${e}` });
   }
 }
