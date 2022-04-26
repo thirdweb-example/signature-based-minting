@@ -23,14 +23,13 @@ export default async function server(
         // Your wallet private key (read it in from .env.local file)
         process.env.PRIVATE_KEY as string,
         // Your RPC provider
-        ethers.getDefaultProvider(
-          "https://polygon-mumbai.g.alchemy.com/v2/ioUyv8HQHdNuHpL21sJDWMxB5tQaLCb2"
-        )
+        ethers.getDefaultProvider("https://rpc-mumbai.matic.today/")
       )
     );
 
     // Load the NFT Collection via it's contract address using the SDK
     const nftCollection = sdk.getNFTCollection(
+      // Replace this with your NFT Collection contract address
       "0xA5EE8c548506d4Eb2dd2A24d85d45263180D7F7B"
     );
 

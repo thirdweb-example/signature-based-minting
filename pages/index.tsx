@@ -17,6 +17,7 @@ const Home: NextPage = () => {
 
   // Fetch the NFT collection from thirdweb via it's contract address.
   const nftCollection = useNFTCollection(
+    // Replace this with your NFT Collection contract address
     "0xA5EE8c548506d4Eb2dd2A24d85d45263180D7F7B"
   );
 
