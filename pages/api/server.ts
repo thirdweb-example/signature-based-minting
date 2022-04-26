@@ -11,8 +11,13 @@ export default async function server(
     // De-structure the arguments we passed in out of the request body
     const { authorAddress, pageText } = JSON.parse(req.body);
 
-    // Initialize the Thirdweb SDK on the serverside
+    // You'll need to add your private key in a .env.local file in the root of your project
     // !!!!! NOTE !!!!! NEVER LEAK YOUR PRIVATE KEY to anyone!
+    if (!process.env.PRIVATE_KEY) {
+      throw new Error("You're missing PRIVATE_KEY in your .env.local file.");
+    }
+
+    // Initialize the Thirdweb SDK on the serverside
     const sdk = new ThirdwebSDK(
       new Wallet(
         // Your wallet private key (read it in from .env.local file)
