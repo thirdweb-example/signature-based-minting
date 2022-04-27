@@ -18,7 +18,8 @@ Remember you can always access the code for this project here: https://github.co
 ## Using This Repo
 
 - Click on the **Use This Template** to create your own copy of this repo:
-  ![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1651027674000/2lhpBTAYw.png)
+
+![use this template.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1651048077489/WeMVOeg6W.png)
 
 - Create your own NFT Collection via the thirdweb dashboard (follow the steps in **Setting Up The NFT Collection** of this doc if you need more help)
 
