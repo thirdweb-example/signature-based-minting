@@ -10,10 +10,10 @@ Remember you can always access the code for this project here: https://github.co
 
 ## Tools:
 
-- **thirdweb React SDK**: to enable users to connect and disconnect their wallets with our website, and prompt them to approve transactions with MetaMask.
-- **thirdweb NFT Collection**: to create an ERC721 NFT Collection that our community can mint NFTs into.
-- **thirdweb TypeScript SDK**: to connect to our NFT Collection Smart contract via TypeScript & React hooks, mint new NFTs, and view all of the NFTs minted so far!
-- **Next JS API Routes**: For us to securely generate signatures on the server-side, on behalf of our wallet, using our wallet's private key.
+- [**thirdweb React SDK**](https://docs.thirdweb.com/react): to enable users to connect and disconnect their wallets with our website, and prompt them to approve transactions with MetaMask.
+- [**thirdweb NFT Collection**](https://portal.thirdweb.com/contracts/nft-collection): to create an ERC721 NFT Collection that our community can mint NFTs into.
+- [**thirdweb TypeScript SDK**](https://docs.thirdweb.com/typescript): to connect to our NFT Collection Smart contract via TypeScript & React hooks, mint new NFTs, and view all of the NFTs minted so far!
+- [**Next JS API Routes**](https://nextjs.org/docs/api-routes/introduction): For us to securely generate signatures on the server-side, on behalf of our wallet, using our wallet's private key.
 
 ## Using This Repo
 
@@ -26,9 +26,9 @@ Remember you can always access the code for this project here: https://github.co
 
 - Create an environment variable in a `.env.local` file with your private key, in the form `PRIVATE_KEY=xxx`, similarly to the `.env.example` file provided.
 
-- Run `npm install`
+- Run `npm install` to install the dependencies.
 
-- Run `npm run dev`
+- Run `npm run dev` to start the development server.
 
 - Visit http://localhost:3000/
 
