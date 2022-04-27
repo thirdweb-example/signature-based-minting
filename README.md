@@ -64,13 +64,13 @@ To get started, we have a ready-made template that includes all the code you nee
 
 Alternatively, you can create your own repo from scratch, by running:
 
-```
+```bash
 npx create-next-app@latest community-book-nft --ts
 ```
 
 Then install the Thirdweb SDK like so:
 
-```
+```bash
 npm install @thirdweb-dev/sdk @thirdweb-dev/react
 ```
 
@@ -78,7 +78,7 @@ _Note: Need to downgrade from React 18 since it is not currently supported [TODO
 
 Next, we'll wrap our application in the Thirdweb Provider so that we can access Thirdweb anywhere in our application, let's open up `_app.tsx` and change it to look like this:
 
-```
+```ts
 import "./styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
