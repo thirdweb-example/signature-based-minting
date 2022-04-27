@@ -17,7 +17,7 @@ Remember you can always access the code for this project here: https://github.co
 
 ## Using This Repo
 
-- Click on the **Use This Template** to create your own copy of this repo:
+- Click on the **Use this template** button to create your own copy of this repo:
 
 ![use this template.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1651048077489/WeMVOeg6W.png)
 
