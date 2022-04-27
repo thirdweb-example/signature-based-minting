@@ -21,6 +21,7 @@ const Home: NextPage = () => {
     "0xA5EE8c548506d4Eb2dd2A24d85d45263180D7F7B"
   );
 
+  // Loading flag to show while we fetch the NFTs from the smart contract
   const [loadingNfts, setLoadingNfts] = useState(true);
   // Here we will store the existing NFT's from the collection.
   const [nfts, setNfts] = useState<NFTMetadataOwner[]>([]);
@@ -110,15 +111,19 @@ const Home: NextPage = () => {
       <h1>Our Community Book:</h1>
 
       {loadingNfts ? (
+        // Show a loading state while we fetch the NFTs
         <div>Loading... </div>
       ) : (
         <div className={styles.pageContainer}>
+          {/* Left arrow button */}
           <button
             onClick={() => changePage(pageIndex - 1)}
             className={styles.arrowButton}
           >
             {"<"}
           </button>
+
+          {/* Current NFT the user is viewing and it's metadata */}
           <div className={styles.page}>
             {/* The Name of the NFT - (Page Number) */}
             <b>{nfts?.[pageIndex]?.metadata?.name}</b>
@@ -130,6 +135,7 @@ const Home: NextPage = () => {
             <i className={styles.owner}>Owner: {nfts?.[pageIndex]?.owner}</i>
           </div>
 
+          {/* Right arrow button */}
           <button
             className={styles.arrowButton}
             onClick={() => changePage(pageIndex + 1)}
