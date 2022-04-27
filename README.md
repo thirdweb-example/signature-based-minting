@@ -1,4 +1,6 @@
-# Introduction
+# Signature Based Minting with Next.JS
+
+## Introduction
 
 In this guide, we will utilize signature-based minting of NFTs to create a "community-built" NFT collection, where each user mints and owns their own NFT based on specific conditions that we provide.
 
