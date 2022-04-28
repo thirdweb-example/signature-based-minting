@@ -1,0 +1,59 @@
+.footerContainer {
+  height: 200px;
+  width: 100vw;
+  background-color: #262936;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.left {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 5%;
+}
+
+.right {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin-right: 5%;
+}
+
+.secondaryButton {
+  cursor: pointer;
+  width: 180px;
+  text-align: center;
+  padding: 5px;
+  border: 1px solid #fff;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.mainButton {
+  cursor: pointer;
+  width: 180px;
+  background-image: linear-gradient(130deg, #f213a4, #5204bf);
+  text-align: center;
+  padding: 5px;
+  border: 2px solid #fff;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* If mobile, stack right column */
+@media screen and (max-width: 850px) {
+  .right {
+    flex-direction: column;
+  }
+}

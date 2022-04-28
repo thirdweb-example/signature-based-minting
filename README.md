@@ -12,9 +12,9 @@ Remember you can always access the code for this project here: https://github.co
 
 ## Tools:
 
-- [**thirdweb React SDK**](https://docs.thirdweb.com/react): to enable users to connect and disconnect their wallets with our website, and prompt them to approve transactions with MetaMask.
+- [**thirdweb React SDK**](https://docs.thirdweb.com/react): to enable users to connect and disconnect their wallets to our website, using [useMetamask](https://docs.thirdweb.com/react/react.usemetamask) & [useDisconnect](https://docs.thirdweb.com/react/react.usedisconnect), and prompt them to approve transactions with MetaMask.
 - [**thirdweb NFT Collection**](https://portal.thirdweb.com/contracts/nft-collection): to create an ERC721 NFT Collection that our community can mint NFTs into.
-- [**thirdweb TypeScript SDK**](https://docs.thirdweb.com/typescript): to connect to our NFT Collection Smart contract via TypeScript & React hooks, mint new NFTs, and view all of the NFTs minted so far!
+- [**thirdweb TypeScript SDK**](https://docs.thirdweb.com/typescript): to connect to our NFT Collection Smart contract via React hooks such as [useNFTCollection](https://docs.thirdweb.com/react/react.usenftcollection), mint new NFTs with [signature based minting](https://docs.thirdweb.com/typescript/sdk.nftcollection.signature), and view all of the NFTs minted so far using [getAll](https://docs.thirdweb.com/typescript/sdk.nftcollection.getall)!
 - [**Next JS API Routes**](https://nextjs.org/docs/api-routes/introduction): For us to securely generate signatures on the server-side, on behalf of our wallet, using our wallet's private key.
 
 ## Using This Repo
