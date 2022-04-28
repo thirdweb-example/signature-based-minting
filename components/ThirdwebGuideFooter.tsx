@@ -14,14 +14,18 @@ export default function ThirdwebGuideFooter({ onLearnMore }: Props) {
           <h4>Built with 💜 using</h4>
         </div>
         <div>
-          <a href="https://thirdweb.com/">
+          <a
+            href="https://thirdweb.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <img src={`/logo.png`} alt="Thirdweb Logo" width={135} />
           </a>
         </div>
       </div>
 
       {/* Right Side column */}
-      <div className={styles.right} style={{ gap: 6 }}>
+      <div className={styles.right}>
         <a className={styles.secondaryButton} onClick={onLearnMore}>
           Learn More
         </a>

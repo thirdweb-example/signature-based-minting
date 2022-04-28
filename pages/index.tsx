@@ -1,5 +1,6 @@
 import styles from "./styles/Home.module.css";
 import {
+  MediaRenderer,
   useAddress,
   useDisconnect,
   useMetamask,
@@ -7,7 +8,8 @@ import {
 } from "@thirdweb-dev/react";
 import { NFTMetadataOwner } from "@thirdweb-dev/sdk";
 import type { NextPage } from "next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { create } from "ipfs-http-client";
 
 const Home: NextPage = () => {
   // Helpful thirdweb hooks to connect and manage the wallet from metamask.
@@ -18,17 +20,17 @@ const Home: NextPage = () => {
   // Fetch the NFT collection from thirdweb via it's contract address.
   const nftCollection = useNFTCollection(
     // Replace this with your NFT Collection contract address
-    "0xA5EE8c548506d4Eb2dd2A24d85d45263180D7F7B"
+    "0x1B4Ce073A2f288711eC0895b78e0AeFBe36E8Aab"
   );
 
   // Loading flag to show while we fetch the NFTs from the smart contract
   const [loadingNfts, setLoadingNfts] = useState(true);
   // Here we will store the existing NFT's from the collection.
   const [nfts, setNfts] = useState<NFTMetadataOwner[]>([]);
-  // This is where we store the text the user types into the input field.
-  const [enteredText, setEnteredText] = useState("");
-  // This is the page index the user is looking at
-  const [pageIndex, setPageIndex] = useState(0);
+
+  // Here we store the user inputs for their NFT.
+  const [nftName, setNftName] = useState<string>("");
+  const [file, setFile] = useState<File>();
 
   // This useEffect block runs whenever the value of nftCollection changes.
   // When the collection is loaded from the above useNFTCollection hook, we'll call getAll()
@@ -43,21 +45,59 @@ const Home: NextPage = () => {
     }
   }, [nftCollection]);
 
+  // Magic to get the file upload even though its hidden
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Function to store file in state when user uploads it
+  const uploadFile = () => {
+    if (fileInputRef?.current) {
+      fileInputRef.current.click();
+
+      fileInputRef.current.onchange = () => {
+        if (fileInputRef?.current?.files?.length) {
+          const file = fileInputRef.current.files[0];
+          setFile(file);
+        }
+      };
+    }
+  };
+
   // This function calls a Next JS API route that mints an NFT with signature-based minting.
   // We send in the address of the current user, and the text they entered as part of the request.
   const mintWithSignature = async () => {
     try {
+      console.log({ file, nftName });
+      if (!file || !nftName) {
+        alert("Please enter a name and upload a file.");
+        return;
+      }
+
+      // Create an instance of the client
+      // TODO: Replace this with thirdweb's new IPFS work
+      // @ts-ignore
+      const client = create("https://ipfs.infura.io:5001/api/v0");
+
+      const added = await client.add(file);
+      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+
+      console.log("Added file", url);
+
       // Make a request to /api/server
       const signedPayloadReq = await fetch(`/api/server`, {
         method: "POST",
         body: JSON.stringify({
           authorAddress: address, // Address of the current user
-          pageText: enteredText, // Text the user entered into the input field
+          nftName: nftName,
+          imagePath: url,
         }),
       });
 
+      console.log("Received Signed payload", signedPayloadReq);
+
       // Grab the JSON from the response
       const json = await signedPayloadReq.json();
+
+      console.log("Json:", json);
 
       // If the request failed, we'll show an error.
       if (!signedPayloadReq.ok) {
@@ -82,84 +122,204 @@ const Home: NextPage = () => {
     }
   };
 
-  const changePage = (index: number) => {
-    if (index < 0 || index >= nfts.length) {
-      return;
-    }
-
-    setPageIndex(index);
-  };
-
   return (
-    <div>
-      <div className={styles.connect}>
-        {/* Show the user the connect or disconnect button depending on if they are connected or not */}
-        {address ? (
-          <>
-            <button className={styles.btn} onClick={disconnectWallet}>
-              Disconnect Wallet
-            </button>
-            <p className={styles.address}>Your address: {address}</p>
-          </>
-        ) : (
-          <button className={styles.btn} onClick={connectWithMetamask}>
-            Connect with Metamask
-          </button>
-        )}
+    <>
+      {/* Header */}
+      <div className={styles.header}>
+        <div className={styles.left}>
+          <div>
+            <a
+              href="https://thirdweb.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={`/logo.png`} alt="Thirdweb Logo" width={135} />
+            </a>
+          </div>
+        </div>
+        <div className={styles.right}>
+          {address ? (
+            <>
+              <a
+                className={styles.secondaryButton}
+                onClick={() => disconnectWallet()}
+              >
+                Disconnect Wallet
+              </a>
+              <p style={{ marginLeft: 8, marginRight: 8, color: "grey" }}>|</p>
+              <p>
+                {address.slice(0, 6).concat("...").concat(address.slice(-4))}
+              </p>
+            </>
+          ) : (
+            <a
+              className={styles.mainButton}
+              onClick={() => connectWithMetamask()}
+            >
+              Connect Wallet
+            </a>
+          )}
+        </div>
       </div>
 
-      <h1>Our Community Book:</h1>
+      {/* Content */}
+      <div className={styles.container}>
+        {/* Top Section */}
+        <h1 style={{ marginBottom: 0 }}>Signature-Based Minting</h1>
+        <p style={{ fontSize: "1.125rem" }}>
+          Signature-based minting with{" "}
+          <b>
+            {" "}
+            <a
+              href="https://thirdweb.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#9f2c9d" }}
+            >
+              thirdweb
+            </a>
+          </b>{" "}
+          + Next.JS to create a community-made NFT collection with restrictions.
+        </p>
 
-      {loadingNfts ? (
-        // Show a loading state while we fetch the NFTs
-        <div>Loading... </div>
-      ) : (
-        <div className={styles.pageContainer}>
-          {/* Left arrow button */}
-          <button
-            onClick={() => changePage(pageIndex - 1)}
-            className={styles.arrowButton}
-          >
-            {"<"}
-          </button>
+        <p>
+          Hint: We only give out signatures if your NFT name is a cool{" "}
+          <b>animal name</b>! 😉
+        </p>
 
-          {/* Current NFT the user is viewing and it's metadata */}
-          <div className={styles.page}>
-            {/* The Name of the NFT - (Page Number) */}
-            <b>{nfts?.[pageIndex]?.metadata?.name}</b>
+        <hr style={{ width: "50%", borderColor: "grey", opacity: 0.25 }} />
 
-            {/* The Description of the NFT (User-entered content) */}
-            <p>{nfts?.[pageIndex]?.metadata?.description}</p>
+        <div className={styles.collectionContainer}>
+          <h2 className={styles.ourCollection}>
+            Mint your own NFT into the collection:
+          </h2>
 
-            {/* The owner of the NFT  */}
-            <i className={styles.owner}>Owner: {nfts?.[pageIndex]?.owner}</i>
-          </div>
-
-          {/* Right arrow button */}
-          <button
-            className={styles.arrowButton}
-            onClick={() => changePage(pageIndex + 1)}
-          >
-            {">"}
-          </button>
-        </div>
-      )}
-
-      {/* If the user has connected their wallet, show the form to create a new page.  */}
-      {address && (
-        <div className={styles.btnContainer}>
           <input
-            className={styles.input}
             type="text"
-            placeholder="Your Page Contents..."
-            onChange={(e) => setEnteredText(e.target.value)}
+            placeholder="Name of your NFT"
+            style={{
+              width: "75%",
+              backgroundColor: "transparent",
+              border: "1px solid grey",
+              borderRadius: 8,
+              color: "#fff",
+              height: 48,
+              padding: "0 16px",
+              fontSize: "1rem",
+              marginBottom: 16,
+            }}
+            maxLength={26}
+            onChange={(e) => setNftName(e.target.value)}
           />
-          <button className={styles.btn} onClick={mintWithSignature}>
-            Create A Page
-          </button>
+
+          {file ? (
+            <img
+              src={URL.createObjectURL(file)}
+              style={{ cursor: "pointer", maxHeight: 250, borderRadius: 8 }}
+              onClick={() => setFile(undefined)}
+            />
+          ) : (
+            <div
+              style={{
+                width: "100%",
+                height: 100,
+                border: "1px dashed grey",
+                borderRadius: 16,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "grey",
+                cursor: "pointer",
+              }}
+              onClick={uploadFile}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                console.log("asdmniadnauisdbuiyadsb iuy");
+                e.preventDefault();
+                setFile(e.dataTransfer.files[0]);
+              }}
+            >
+              Drag and drop an image here to upload it!
+            </div>
+          )}
         </div>
-      )}
-    </div>
+        <input
+          type="file"
+          accept="image/png, image/gif, image/jpeg"
+          id="profile-picture-input"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+        />
+
+        <div style={{ marginTop: 24 }}>
+          {address ? (
+            <a className={styles.mainButton} onClick={mintWithSignature}>
+              Mint NFT
+            </a>
+          ) : (
+            <a className={styles.mainButton} onClick={connectWithMetamask}>
+              Connect Wallet
+            </a>
+          )}
+        </div>
+
+        <hr
+          style={{
+            width: "25%",
+            borderColor: "grey",
+            marginTop: 64,
+            opacity: 0.25,
+          }}
+        />
+
+        <div className={styles.collectionContainer}>
+          <h2 className={styles.ourCollection}>
+            Other NFTs in this collection:
+          </h2>
+
+          {loadingNfts ? (
+            <p>Loading...</p>
+          ) : (
+            <div className={styles.nftGrid}>
+              {nfts?.map((nft) => (
+                <div
+                  className={styles.nftItem}
+                  key={nft.metadata.id.toString()}
+                >
+                  <div>
+                    <MediaRenderer
+                      src={nft.metadata.image}
+                      style={{
+                        height: 90,
+                        borderRadius: 16,
+                      }}
+                    />
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    <p>Named</p>
+                    <p>
+                      <b>{nft.metadata.name}</b>
+                    </p>
+                  </div>
+
+                  <div style={{ textAlign: "center" }}>
+                    <p>Owned by</p>
+                    <p>
+                      <b>
+                        {nft.owner
+                          .slice(0, 6)
+                          .concat("...")
+                          .concat(nft.owner.slice(-4))}
+                      </b>
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -12,6 +12,7 @@ body {
   min-height: 100vh;
   text-rendering: optimizeSpeed;
   line-height: 1.5;
+  --hello: -100%;
 }
 
 /* Inherit fonts for inputs and buttons */
@@ -34,11 +35,8 @@ body {
   font-family: "Inter", sans-serif;
   color: var(--white);
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
   margin: 0;
+  text-align: center;
 }
 
 h2 {

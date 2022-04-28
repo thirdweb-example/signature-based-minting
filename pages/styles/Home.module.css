@@ -34,19 +34,13 @@
 }
 
 .container {
+  margin-top: 96px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.input {
-  height: 42px;
-  padding: 0 16px;
-  border-radius: 16px;
-  border: 1px solid var(--tw-color1);
-  font-weight: 600;
-  margin-top: 16px;
+  width: 100vw;
+  padding: 0 24px;
 }
 
 .page {
@@ -82,4 +76,109 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+
+.header {
+  background-color: #262936;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 96px;
+  margin-bottom: 96px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.left {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: 5%;
+}
+
+.right {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin-right: 5%;
+}
+
+.secondaryButton {
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.mainButton {
+  cursor: pointer;
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  line-height: 1.2;
+  font-weight: 600;
+  transition-property: background-color, border-color, color, fill, stroke,
+    opacity, box-shadow, transform;
+  transition-duration: 200ms;
+  height: 3rem;
+  min-width: 3rem;
+  font-size: 1rem;
+  background: #e5e5ea;
+  background-image: linear-gradient(to left, #cc25b3 0%, #418dff 101.52%);
+  color: #fff;
+  width: 180px;
+  text-align: center;
+  border-radius: 9999px;
+}
+
+.mainButton:hover {
+  opacity: 0.8;
+}
+
+.ourCollection {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.collectionContainer {
+  width: 500px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2%;
+}
+
+.nftGrid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.nftItem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid grey;
+  border-radius: 16px;
+  padding: 8px;
+  margin-top: 12px;
 }
