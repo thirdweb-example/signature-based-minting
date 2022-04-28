@@ -65,7 +65,7 @@ Nice! Now we have an NFT collection. Let's set up a project and see how we can s
 
 To get started, we have a ready-made template that includes all the code you need to work with Thirdweb, TypeScript and Next JS available here https://github.com/thirdweb-example/next-typescript-starter
 
-We'll wrap our application in the Thirdweb Provider so that we can access Thirdweb anywhere in our application, let's open up `_app.tsx` and change it to look like this:
+Our application is wrapped in a Thirdweb Provider so that we can access Thirdweb anywhere in our application:
 
 ```ts
 import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
@@ -82,15 +82,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 ```
 
-Awesome, now we can access and use the Thirdweb SDK's hooks and functions anywhere in our application.
-
-Let's head over to the home page at `index.tsx` now so that we can start getting our users connected.
-
 ## Connecting User's Wallets
 
-First things first, we want users to be able to connect to our dApp via their MetaMask wallet. Thirdweb has a tonne of helpful hooks such as `useMetaMask` that enable us to get this up and running super fast.
-
-Go ahead and add the hooks from the thirdweb React SDK to connect, disconnect, and view the user's wallet.
+Over to the home page at `index.tsx`, we're using the [thirdweb React SDK MetaMask Connector](https://docs.thirdweb.com/react/category/wallet-connection) so our user can connect their wallet to our website.
 
 ```ts
 import {
@@ -107,19 +101,13 @@ import {
 };
 ```
 
-Attach these `connectWithMetamask` and `disconnectWallet` functions to the `onClick` to fire when the user clicks the `Connect` or `Disconnect` buttons.
+We've attached these `connectWithMetamask` and `disconnectWallet` functions to the `onClick` to fire when the user clicks the `Connect` or `Disconnect` buttons.
 
 You can see an example of how to implement that logic in our [index.tsx file](pages/index.tsx)
 
-Awesome! Now we've got the user connected to our site, let's show them some NFTs!
-
 ## Loading & Displaying NFTs
 
-For our community book, each page is an NFT minted by a different user. We can use another thirdweb hook called `useNFTCollection` to connect to our smart contract and load all of the NFT's in our collection.
-
-Once we've loaded them from the smart contract, we can display each NFT to the user, as if they're reading the pages of a book!
-
-Firstly, we'll use the `useNFTCollection` to load the NFT collection we deployed via the Thirdweb dashboard:
+For our community book, each page is an NFT minted by a different user. We're using another thirdweb hook called `useNFTCollection` to connect to our smart contract and load all of the NFT's in our collection.
 
 ```ts
 // Fetch the NFT collection from thirdweb via it's contract address.
@@ -129,9 +117,11 @@ const nftCollection = useNFTCollection(
 );
 ```
 
+Once we've loaded them from the smart contract, we can display each NFT to the user, as if they're reading the pages of a book!
+
 We'll be using React's `useEffect` hook to fetch the NFTs when the page loads, then the `useState` hook to store the NFTs in state, so that we can render them on the UI.
 
-We'll add one stateful variable to store a loading state while we fetch the NFTs, then another stateful variable to store the actual NFTs once they have loaded.
+**State**:
 
 ```ts
 // Loading flag to show while we fetch the NFTs from the smart contract
@@ -140,10 +130,9 @@ const [loadingNfts, setLoadingNfts] = useState(true);
 const [nfts, setNfts] = useState<NFTMetadataOwner[]>([]);
 ```
 
-Next, we'll run some logic inside a `useEffect`, that calls `getAll` on the NFT collection. Since it can take a second or two to load the actual contract from our `useNFTCollection` hook, we're running this code whenever the value of `nftCollection` changes.
+**Fetch All NFTS**:
 
 ```ts
-// This useEffect block runs whenever the value of nftCollection changes.
 // When the collection is loaded from the above useNFTCollection hook, we'll call getAll()
 // to get all the NFT's from the collection and store them in state.
 useEffect(() => {
@@ -163,8 +152,6 @@ We'll let you decide how best to display your NFTs, but if you're looking for an
 
 We can also see who is the owner of each nft with `.owner`, and the `metadata.name` and `metadata.description` inside of each NFT!
 
-But wait, our collection doesn't have any NFTs yet. Let's get to the juicy part. Signature based minting!
-
 ## Creating NFTs with Signature Based Minting
 
 The way that our signature-based minting process works is in 3 steps:
@@ -179,8 +166,6 @@ The way that our signature-based minting process works is in 3 steps:
 
 The main benefit here is that we have made an environment where us (the owner of the smart contract) can decide what the user can mint into our collection, all programmatically.
 
-We can also create NFTs with metadata that comes from user input, which is why we created the input field earlier.
-
 ## API Route
 
 To create an API Route, you'll need to create a file in the `/pages/api` directory of your project.
@@ -189,7 +174,7 @@ On the server-side API route, we can:
 
 - Run a few checks to see if the requested NFT meets our criteria
 - Generate a signature to mint the NFT if it does.
-- Send the signature to the client/user.
+- Send the signature back to the client/user if the NFT is eligible.
 
 **De-structure the arguments we passed in out of the request body**:
 
@@ -197,7 +182,7 @@ On the server-side API route, we can:
 const { authorAddress, pageText } = JSON.parse(req.body);
 ```
 
-**Initialize the Thirdweb SDK on the serverside**
+**Initialize the Thirdweb SDK on the server-side**
 
 ```ts
 const sdk = new ThirdwebSDK(
@@ -219,7 +204,7 @@ const nftCollection = sdk.getNFTCollection(
 );
 ```
 
-**Check that this wallet doesn't already own a page, to enforce 1 NFT per wallet**
+**Example Check #1 - Check that this wallet doesn't already own an NFT in this collection**
 
 ```ts
 const hasMinted = (await nftCollection.balanceOf(authorAddress)).gt(0);
@@ -229,7 +214,7 @@ if (hasMinted) {
 }
 ```
 
-**Check that there is less than 100 pages, to enforce a limit of 100 pages**
+**Example Check #2 - Check that there is less than 100 NFTs total**
 
 ```ts
 const bookFinished = (await nftCollection.totalSupply()).gt(100);
@@ -274,9 +259,7 @@ res.status(500).json({
 
 ## Making the API Request on the client
 
-Now we have an API route available, we can make `fetch` requests to this API, and securely run that code on the server-side.
-
-Let's head back to `index.tsx` and write the function that calls this API route.
+With our API route available, we make `fetch` requests to this API, and securely run that code on the server-side.
 
 **Call the API route on the client**
 
