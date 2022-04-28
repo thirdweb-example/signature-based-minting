@@ -46,7 +46,7 @@ export default async function server(
     // 2) Check that there are no more than 100 pages - Max Supply of 100 NFTs
     const bookFinished = (await nftCollection.totalSupply()).gt(100);
     if (bookFinished) {
-      res.status(400).json({ error: "Book finihsed" });
+      res.status(400).json({ error: "Book finished" });
       return;
     }
 
