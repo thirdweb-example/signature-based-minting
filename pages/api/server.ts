@@ -9,6 +9,7 @@ export default async function server(
   res: NextApiResponse
 ) {
   try {
+    console.log("Started:", new Date());
     // De-structure the arguments we passed in out of the request body
     const { authorAddress, nftName, imagePath } = JSON.parse(req.body);
 
@@ -24,7 +25,9 @@ export default async function server(
         // Your wallet private key (read it in from .env.local file)
         process.env.PRIVATE_KEY as string,
         // Your RPC provider
-        ethers.getDefaultProvider("https://rpc-mumbai.matic.today/")
+        ethers.getDefaultProvider(
+          "https://polygon-mumbai.g.alchemy.com/v2/ioUyv8HQHdNuHpL21sJDWMxB5tQaLCb2"
+        )
       )
     );
 
@@ -47,21 +50,22 @@ export default async function server(
     // 2) Check that this wallet hasn't already minted a page - 1 NFT per wallet
     const hasMinted = (await nftCollection.balanceOf(authorAddress)).gt(0);
     if (hasMinted) {
-      res.status(400).json({ error: "Already minted" });
-      return;
+      // res.status(400).json({ error: "Already minted" });
+      // return;
     }
 
     // If all the checks pass, begin generating the signature...
-
-    console.log("hi");
-    console.log({ authorAddress, nftName, imagePath });
 
     // Generate the signature for the page NFT
     const signedPayload = await nftCollection.signature.generate({
       to: authorAddress,
       metadata: {
-        image: imagePath as string,
         name: nftName as string,
+        image: imagePath as string,
+        description: "An awesome animal NFT",
+        properties: {
+          // Add any properties you want to store on the NFT
+        },
       },
     });
 
