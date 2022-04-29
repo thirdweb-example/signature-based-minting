@@ -5,6 +5,11 @@ type Props = {
   onLearnMore: () => void;
 };
 
+const githubUrl =
+  "https://github.com/thirdweb-example/signature-based-minting-next-ts";
+const deployUrl =
+  "https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fthirdweb-example%2Fsignature-based-minting-next-ts&env=PRIVATE_KEY,NEXT_PUBLIC_NFT_COLLECTION_ADDRESS";
+
 export default function ThirdwebGuideFooter({ onLearnMore }: Props) {
   return (
     <div className={styles.footerContainer}>
@@ -15,7 +20,7 @@ export default function ThirdwebGuideFooter({ onLearnMore }: Props) {
         </div>
         <div>
           <a
-            href="https://thirdweb.com/"
+            href={"https://thirdweb.com/"}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -31,14 +36,20 @@ export default function ThirdwebGuideFooter({ onLearnMore }: Props) {
         </a>
 
         <a
-          href="https://github.com/REPO_HERE"
+          href={githubUrl}
           className={styles.secondaryButton}
           style={{ textDecoration: "none" }}
         >
           View on GitHub
         </a>
 
-        <a className={styles.mainButton}>Deploy Your Own</a>
+        <a
+          className={styles.mainButton}
+          href={deployUrl}
+          style={{ textDecoration: "none" }}
+        >
+          Deploy Your Own
+        </a>
       </div>
     </div>
   );

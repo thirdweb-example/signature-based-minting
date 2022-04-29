@@ -20,7 +20,7 @@ const Home: NextPage = () => {
   // Fetch the NFT collection from thirdweb via it's contract address.
   const nftCollection = useNFTCollection(
     // Replace this with your NFT Collection contract address
-    "0x1B4Ce073A2f288711eC0895b78e0AeFBe36E8Aab"
+    process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS
   );
 
   // Loading flag to show while we fetch the NFTs from the smart contract

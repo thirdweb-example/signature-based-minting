@@ -34,7 +34,7 @@ export default async function server(
     // Load the NFT Collection via it's contract address using the SDK
     const nftCollection = sdk.getNFTCollection(
       // Replace this with your NFT Collection contract address
-      "0x1B4Ce073A2f288711eC0895b78e0AeFBe36E8Aab"
+      process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS as string
     );
 
     // Here we can make all kinds of cool checks to see if the user is eligible to mint the NFT.
