@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 type Props = {
   show: boolean;
@@ -6,10 +6,6 @@ type Props = {
 };
 
 export default function ThirdwebGuideOverlay({ show, setShow }: Props) {
-  useEffect(() => {
-    // If anyone clicks
-  });
-
   return (
     <div
       style={{
