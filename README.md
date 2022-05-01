@@ -25,9 +25,9 @@ Remember you can always access the code for this project here: https://github.co
 
 - Create your own NFT Collection via the thirdweb dashboard (follow the steps in **Setting Up The NFT Collection** of this doc if you need more help)
 
-- Replace instances of `0x..` with your NFT collection address.
-
 - Create an environment variable in a `.env.local` file with your private key, in the form `PRIVATE_KEY=xxx`, similarly to the `.env.example` file provided.
+
+- Add the `NEXT_PUBLIC_NFT_COLLECTION_ADDRESS` environment variable to your `.env.local` file too, in the form `NEXT_PUBLIC_NFT_COLLECTION_ADDRESS=xxx`, similarly to the `.env.example` file provided.
 
 - Run `npm install` to install the dependencies.
 
@@ -41,13 +41,15 @@ NFT Collections come in different shapes, sizes, and rules.
 
 On one end of the spectrum, an NFT collection can be a set amount of NFTs, and they're all made by one wallet, once they're all claimed/minted, no more NFTs are ever minted in the collection. A popular example of this is the [Bored Ape Yacht Club Collection](https://boredapeyachtclub.com/#/).
 
-On the other end of the spectrum, an NFT collection could also start out with no NFTs, and NFTs in this collection could be created by anyone, at any time. These NFTs could be completely different, it just depends on what the user who minted the NFT wanted it to be. This type of collection is a bit less well-known, but demonstrates that NFT collections can be completely different in terms of how the NFTs inside them are generated.
+On the other end of the spectrum, an NFT collection could also start out with no NFTs! NFTs in _this_ collection could be created by anyone, at any time, and the NFTs could look completely different. This type of collection is a bit less well-known, but demonstrates that NFT collections can be totally different!
 
 Signature-based minting enables a use case that is somewhere between these two ends of the spectrum. What if you didn't want **EVERYONE** to be able to mint an NFT into your collection, or you only wanted specific types of NFTs to be minted?
 
 Signature-based minting allows you to specify exactly what NFTs you allow to be minted into your NFT collection, by generating a signature for an NFT. This signature can be used by a wallet address that you specify to mint that NFT.
 
-In this guide, we'll grant users signatures to mint NFTs into our collection that follow the format we expect. In the end, we'll have a community-made collection of pages, all of which have a `pageText` field, so that we end up with a book where each page is created by a different user.
+In this guide, we'll grant users signatures to mint NFTs into our collection that follow the format we expect.
+
+In the end, we'll have a community-made collection that only contains NFTs with animal names, by restricting the signatures we provide to only allow NFTs with one of our[ animal names](animalNames.ts)!
 
 Let's get into it!
 
@@ -84,7 +86,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 ## Connecting User's Wallets
 
-Over to the home page at `index.tsx`, we're using the [thirdweb React SDK MetaMask Connector](https://docs.thirdweb.com/react/category/wallet-connection) so our user can connect their wallet to our website.
+Over at the home page at `index.tsx`, we're using the [thirdweb React SDK MetaMask Connector](https://docs.thirdweb.com/react/category/wallet-connection) so our user can connect their wallet to our website.
 
 ```ts
 import {
@@ -107,13 +109,13 @@ You can see an example of how to implement that logic in our [index.tsx file](pa
 
 ## Loading & Displaying NFTs
 
-For our community book, each page is an NFT minted by a different user. We're using another thirdweb hook called `useNFTCollection` to connect to our smart contract and load all of the NFT's in our collection.
+For our community collection, each NFT is minted by a different user. We're using another thirdweb hook called `useNFTCollection` to connect to our smart contract and load all of the NFT's in our collection.
 
 ```ts
 // Fetch the NFT collection from thirdweb via it's contract address.
 const nftCollection = useNFTCollection(
-  // Replace this with your NFT Collection contract address from the dashboard
-  "0x0000000000000000000000000000000000000000"
+  // Replace this with your NFT Collection contract address
+  process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS
 );
 ```
 
@@ -160,7 +162,7 @@ The way that our signature-based minting process works is in 3 steps:
 
 1. The connected wallet calls a [Next JS API Route](https://nextjs.org/docs/api-routes/introduction) with two parameters, `authorAddress` and `pageText` inside the request body.
 
-2. The API route runs some checks on the server-side to see if this user and the NFT they are requesting to mint is eligible or not. If the request _is_ eligible, it generates a signature to mint an NFT with a specific set of characteristics. For example, if the user passed in `"Hello world"` as the `pageText` argument, the signature that gets generated will be for an NFT that's description is "Hello world".
+2. The API route runs some checks on the server-side to see if this user and the NFT they are requesting to mint is eligible or not. If the request _is_ eligible, it generates a signature to mint an NFT with a specific set of characteristics.
 
 3. Once the API function is done processing, it sends the client/user a signature. The user can call `mint` with this signature to create an NFT with the conditions provided from our server.
 
@@ -179,7 +181,7 @@ On the server-side API route, we can:
 **De-structure the arguments we passed in out of the request body**:
 
 ```ts
-const { authorAddress, pageText } = JSON.parse(req.body);
+const { authorAddress, nftName, imagePath } = JSON.parse(req.body);
 ```
 
 **Initialize the Thirdweb SDK on the server-side**
@@ -217,9 +219,9 @@ if (hasMinted) {
 **Example Check #2 - Check that there is less than 100 NFTs total**
 
 ```ts
-const bookFinished = (await nftCollection.totalSupply()).gt(100);
-if (bookFinished) {
-  res.status(400).json({ error: "Book finished" });
+const collectionFinished = (await nftCollection.totalSupply()).gt(100);
+if (collectionFinished) {
+  res.status(400).json({ error: "Max Supply Reached" });
   return;
 }
 ```
@@ -234,8 +236,12 @@ const pageNumber = (await nftCollection.totalSupply()).add(1);
 const signedPayload = await nftCollection.signature.generate({
   to: authorAddress,
   metadata: {
-    name: `Page ${pageNumber}`,
-    description: pageText,
+    name: nftName as string,
+    image: imagePath as string,
+    description: "An awesome animal NFT",
+    properties: {
+      // Add any properties you want to store on the NFT
+    },
   },
 });
 ```
@@ -264,11 +270,13 @@ With our API route available, we make `fetch` requests to this API, and securely
 **Call the API route on the client**
 
 ```ts
+// Make a request to /api/server
 const signedPayloadReq = await fetch(`/api/server`, {
   method: "POST",
   body: JSON.stringify({
     authorAddress: address, // Address of the current user
-    pageText: enteredText, // Text the user entered into the input field
+    nftName: nftName,
+    imagePath: url,
   }),
 });
 
