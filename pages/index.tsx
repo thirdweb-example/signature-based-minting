@@ -5,17 +5,18 @@ import {
   useDisconnect,
   useMetamask,
   useNFTCollection,
+  useSigner,
 } from "@thirdweb-dev/react";
-import { NFTMetadataOwner } from "@thirdweb-dev/sdk";
+import { NFTMetadataOwner, ThirdwebSDK } from "@thirdweb-dev/sdk";
 import type { NextPage } from "next";
 import { useEffect, useRef, useState } from "react";
-import { create } from "ipfs-http-client";
 
 const Home: NextPage = () => {
   // Helpful thirdweb hooks to connect and manage the wallet from metamask.
   const address = useAddress();
   const connectWithMetamask = useMetamask();
   const disconnectWallet = useDisconnect();
+  const signer = useSigner();
 
   // Fetch the NFT collection from thirdweb via it's contract address.
   const nftCollection = useNFTCollection(
@@ -66,21 +67,20 @@ const Home: NextPage = () => {
   // We send in the address of the current user, and the text they entered as part of the request.
   const mintWithSignature = async () => {
     try {
-      console.log({ file, nftName });
       if (!file || !nftName) {
         alert("Please enter a name and upload a file.");
         return;
       }
 
-      // Create an instance of the client
-      // TODO: Replace this with thirdweb's new IPFS work
-      // @ts-ignore
-      const client = create("https://ipfs.infura.io:5001/api/v0");
+      if (!address || !signer) {
+        alert("Please connect to your wallet.");
+        return;
+      }
 
-      const added = await client.add(file);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-
-      console.log("Added file", url);
+      // Upload image to IPFS using the sdk.storage
+      const tw = new ThirdwebSDK(signer);
+      const ipfsHash = await tw.storage.upload(file);
+      const url = `${ipfsHash}.${file.type.split("/")[1]}`;
 
       // Make a request to /api/server
       const signedPayloadReq = await fetch(`/api/server`, {
@@ -165,8 +165,8 @@ const Home: NextPage = () => {
       {/* Content */}
       <div className={styles.container}>
         {/* Top Section */}
-        <h1 style={{ marginBottom: 0 }}>Signature-Based Minting</h1>
-        <p style={{ fontSize: "1.125rem" }}>
+        <h1 className={styles.h1}>Signature-Based Minting</h1>
+        <p className={styles.explain}>
           Signature-based minting with{" "}
           <b>
             {" "}
@@ -174,7 +174,7 @@ const Home: NextPage = () => {
               href="https://thirdweb.com/"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "#9f2c9d" }}
+              className={styles.purple}
             >
               thirdweb
             </a>
@@ -187,7 +187,7 @@ const Home: NextPage = () => {
           <b>animal name</b>! 😉
         </p>
 
-        <hr style={{ width: "50%", borderColor: "grey", opacity: 0.25 }} />
+        <hr className={styles.divider} />
 
         <div className={styles.collectionContainer}>
           <h2 className={styles.ourCollection}>
@@ -197,17 +197,7 @@ const Home: NextPage = () => {
           <input
             type="text"
             placeholder="Name of your NFT"
-            style={{
-              width: "75%",
-              backgroundColor: "transparent",
-              border: "1px solid grey",
-              borderRadius: 8,
-              color: "#fff",
-              height: 48,
-              padding: "0 16px",
-              fontSize: "1rem",
-              marginBottom: 16,
-            }}
+            className={styles.textInput}
             maxLength={26}
             onChange={(e) => setNftName(e.target.value)}
           />
@@ -220,21 +210,10 @@ const Home: NextPage = () => {
             />
           ) : (
             <div
-              style={{
-                width: "100%",
-                height: 100,
-                border: "1px dashed grey",
-                borderRadius: 16,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "grey",
-                cursor: "pointer",
-              }}
+              className={styles.imageInput}
               onClick={uploadFile}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
-                console.log("asdmniadnauisdbuiyadsb iuy");
                 e.preventDefault();
                 setFile(e.dataTransfer.files[0]);
               }}
@@ -263,14 +242,7 @@ const Home: NextPage = () => {
           )}
         </div>
 
-        <hr
-          style={{
-            width: "25%",
-            borderColor: "grey",
-            marginTop: 64,
-            opacity: 0.25,
-          }}
-        />
+        <hr className={styles.smallDivider} />
 
         <div className={styles.collectionContainer}>
           <h2 className={styles.ourCollection}>

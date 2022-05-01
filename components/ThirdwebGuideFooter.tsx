@@ -37,6 +37,8 @@ export default function ThirdwebGuideFooter({ onLearnMore }: Props) {
 
         <a
           href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           className={styles.secondaryButton}
           style={{ textDecoration: "none" }}
         >
@@ -44,8 +46,10 @@ export default function ThirdwebGuideFooter({ onLearnMore }: Props) {
         </a>
 
         <a
-          className={styles.mainButton}
           href={deployUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.mainButton}
           style={{ textDecoration: "none" }}
         >
           Deploy Your Own

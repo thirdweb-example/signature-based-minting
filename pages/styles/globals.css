@@ -13,6 +13,7 @@ body {
   text-rendering: optimizeSpeed;
   line-height: 1.5;
   --hello: -100%;
+  padding-bottom: 250px;
 }
 
 /* Inherit fonts for inputs and buttons */
