@@ -6,9 +6,7 @@ In this guide, we will utilize signature-based minting of NFTs to create a "comm
 
 By the end, we'll have an NFT collection of **pages**, where each page has been written and minted by a different user.
 
-Demo Link: https://community-book-nft.vercel.app/
-
-Remember you can always access the code for this project here: https://github.com/thirdweb-example/CommunityBookNFT
+**Check out the Demo here**: https://community-book-nft.vercel.app/
 
 ## Tools:
 
@@ -49,7 +47,7 @@ Signature-based minting allows you to specify exactly what NFTs you allow to be 
 
 In this guide, we'll grant users signatures to mint NFTs into our collection that follow the format we expect.
 
-In the end, we'll have a community-made collection that only contains NFTs with animal names, by restricting the signatures we provide to only allow NFTs with one of our[ animal names](animalNames.ts)!
+In the end, we'll have a community-made collection that only contains NFTs with animal names, by restricting the signatures we provide to only allow NFTs with one of our [animal names](animalNames.ts)!
 
 Let's get into it!
 
