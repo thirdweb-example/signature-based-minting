@@ -158,7 +158,7 @@ The way that our signature-based minting process works is in 3 steps:
 
 ![image.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1650958559249/S8mlZIQZm.png)
 
-1. The connected wallet calls a [Next JS API Route](https://nextjs.org/docs/api-routes/introduction) with two parameters, `authorAddress` and `pageText` inside the request body.
+1. The connected wallet calls a [Next JS API Route](https://nextjs.org/docs/api-routes/introduction) with three parameters, `authorAddress`, `nftName`, and `imagePath` inside the request body.
 
 2. The API route runs some checks on the server-side to see if this user and the NFT they are requesting to mint is eligible or not. If the request _is_ eligible, it generates a signature to mint an NFT with a specific set of characteristics.
 
