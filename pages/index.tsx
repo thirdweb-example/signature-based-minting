@@ -4,10 +4,12 @@ import {
   useAddress,
   useDisconnect,
   useMetamask,
+  useNetwork,
+  useNetworkMismatch,
   useNFTCollection,
   useSigner,
 } from "@thirdweb-dev/react";
-import { NFTMetadataOwner, ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { ChainId, NFTMetadataOwner, ThirdwebSDK } from "@thirdweb-dev/sdk";
 import type { NextPage } from "next";
 import { useEffect, useRef, useState } from "react";
 
@@ -17,6 +19,8 @@ const Home: NextPage = () => {
   const connectWithMetamask = useMetamask();
   const disconnectWallet = useDisconnect();
   const signer = useSigner();
+  const isOnWrongNetwork = useNetworkMismatch();
+  const [, switchNetwork] = useNetwork();
 
   // Fetch the NFT collection from thirdweb via it's contract address.
   const nftCollection = useNFTCollection(
@@ -66,6 +70,16 @@ const Home: NextPage = () => {
   // This function calls a Next JS API route that mints an NFT with signature-based minting.
   // We send in the address of the current user, and the text they entered as part of the request.
   const mintWithSignature = async () => {
+    if (!address) {
+      connectWithMetamask();
+      return;
+    }
+
+    if (isOnWrongNetwork) {
+      switchNetwork && switchNetwork(ChainId.Mumbai);
+      return;
+    }
+
     try {
       if (!file || !nftName) {
         alert("Please enter a name and upload a file.");
@@ -115,6 +129,8 @@ const Home: NextPage = () => {
       const nft = await nftCollection?.signature.mint(signedPayload);
 
       console.log("Successfully minted NFT with signature", nft);
+
+      alert("Successfully minted NFT with signature");
 
       return nft;
     } catch (e) {
