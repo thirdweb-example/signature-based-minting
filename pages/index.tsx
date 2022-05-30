@@ -1,17 +1,18 @@
 import styles from "./styles/Home.module.css";
 import {
-  MediaRenderer,
+  ThirdwebNftMedia,
   useAddress,
   useDisconnect,
   useMetamask,
   useNetwork,
   useNetworkMismatch,
   useNFTCollection,
+  useNFTs,
   useSigner,
 } from "@thirdweb-dev/react";
-import { ChainId, NFTMetadataOwner, ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { ChainId, ThirdwebSDK } from "@thirdweb-dev/sdk";
 import type { NextPage } from "next";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 const Home: NextPage = () => {
   // Helpful thirdweb hooks to connect and manage the wallet from metamask.
@@ -28,27 +29,11 @@ const Home: NextPage = () => {
     process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS
   );
 
-  // Loading flag to show while we fetch the NFTs from the smart contract
-  const [loadingNfts, setLoadingNfts] = useState(true);
-  // Here we will store the existing NFT's from the collection.
-  const [nfts, setNfts] = useState<NFTMetadataOwner[]>([]);
-
   // Here we store the user inputs for their NFT.
   const [nftName, setNftName] = useState<string>("");
   const [file, setFile] = useState<File>();
 
-  // This useEffect block runs whenever the value of nftCollection changes.
-  // When the collection is loaded from the above useNFTCollection hook, we'll call getAll()
-  // to get all the NFT's from the collection and store them in state.
-  useEffect(() => {
-    if (nftCollection) {
-      (async () => {
-        const loadedNfts = await nftCollection.getAll();
-        setNfts(loadedNfts);
-        setLoadingNfts(false);
-      })();
-    }
-  }, [nftCollection]);
+  const { data: nfts, isLoading: loadingNfts } = useNFTs(nftCollection);
 
   // Magic to get the file upload even though its hidden
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -275,8 +260,8 @@ const Home: NextPage = () => {
                   key={nft.metadata.id.toString()}
                 >
                   <div>
-                    <MediaRenderer
-                      src={nft.metadata.image}
+                    <ThirdwebNftMedia
+                      metadata={nft.metadata}
                       style={{
                         height: 90,
                         borderRadius: 16,

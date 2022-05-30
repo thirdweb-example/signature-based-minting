@@ -4,22 +4,20 @@
 
 In this guide, we will utilize signature-based minting of NFTs to create a "community-built" NFT collection, where each user mints and owns their own NFT based on specific conditions that we provide.
 
-By the end, we'll have an NFT collection of **pages**, where each page has been written and minted by a different user.
+By the end, we'll have an NFT collection of NFTs that are all animal names, as specified in the [animalNames.ts](animalNames.ts) file.
 
 **Check out the Demo here**: https://community-book-nft.vercel.app/
 
 ## Tools:
 
-- [**thirdweb React SDK**](https://docs.thirdweb.com/react): to enable users to connect and disconnect their wallets to our website, using [useMetamask](https://docs.thirdweb.com/react/react.usemetamask) & [useDisconnect](https://docs.thirdweb.com/react/react.usedisconnect), and prompt them to approve transactions with MetaMask.
+- [**thirdweb React SDK**](https://docs.thirdweb.com/react): to enable users to connect and disconnect their wallets to our website, using [useMetamask](https://docs.thirdweb.com/react/react.usemetamask) & [useDisconnect](https://docs.thirdweb.com/react/react.usedisconnect), and prompt them to approve transactions with MetaMask. We'll also use the helpful hooks such as [useNFTs](https://docs.thirdweb.com/react/react.usenfts) to easily fetch data from the smart contract.
 - [**thirdweb NFT Collection**](https://portal.thirdweb.com/contracts/nft-collection): to create an ERC721 NFT Collection that our community can mint NFTs into.
-- [**thirdweb TypeScript SDK**](https://docs.thirdweb.com/typescript): to connect to our NFT Collection Smart contract via React hooks such as [useNFTCollection](https://docs.thirdweb.com/react/react.usenftcollection), mint new NFTs with [signature based minting](https://docs.thirdweb.com/typescript/sdk.nftcollection.signature), and view all of the NFTs minted so far using [getAll](https://docs.thirdweb.com/typescript/sdk.nftcollection.getall)!
+- [**thirdweb TypeScript SDK**](https://docs.thirdweb.com/typescript): to connect to our NFT Collection Smart contract via React hooks such as [useNFTCollection](https://docs.thirdweb.com/react/react.usenftcollection), mint new NFTs with [signature based minting](https://docs.thirdweb.com/typescript/sdk.nftcollection.signature).
 - [**Next JS API Routes**](https://nextjs.org/docs/api-routes/introduction): For us to securely generate signatures on the server-side, on behalf of our wallet, using our wallet's private key.
 
 ## Using This Repo
 
-- Click on the **Use this template** button to create your own copy of this repo:
-
-![use this template.png](https://cdn.hashnode.com/res/hashnode/image/upload/v1651048077489/WeMVOeg6W.png)
+- Clone this repository
 
 - Create your own NFT Collection via the thirdweb dashboard (follow the steps in **Setting Up The NFT Collection** of this doc if you need more help)
 
@@ -67,7 +65,7 @@ To get started, we have a ready-made template that includes all the code you nee
 
 Our application is wrapped in a Thirdweb Provider so that we can access Thirdweb anywhere in our application:
 
-```ts
+```tsx
 import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
 
 // This is the chainId your dApp will work on.
@@ -86,7 +84,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 Over at the home page at `index.tsx`, we're using the [thirdweb React SDK MetaMask Connector](https://docs.thirdweb.com/react/category/wallet-connection) so our user can connect their wallet to our website.
 
-```ts
+```tsx
 import {
   useAddress,
   useDisconnect,
@@ -109,7 +107,7 @@ You can see an example of how to implement that logic in our [index.tsx file](pa
 
 For our community collection, each NFT is minted by a different user. We're using another thirdweb hook called `useNFTCollection` to connect to our smart contract and load all of the NFT's in our collection.
 
-```ts
+```tsx
 // Fetch the NFT collection from thirdweb via it's contract address.
 const nftCollection = useNFTCollection(
   // Replace this with your NFT Collection contract address
@@ -117,33 +115,14 @@ const nftCollection = useNFTCollection(
 );
 ```
 
-Once we've loaded them from the smart contract, we can display each NFT to the user, as if they're reading the pages of a book!
+Once we've loaded them from the smart contract, we can display each NFT to the user.
 
-We'll be using React's `useEffect` hook to fetch the NFTs when the page loads, then the `useState` hook to store the NFTs in state, so that we can render them on the UI.
-
-**State**:
-
-```ts
-// Loading flag to show while we fetch the NFTs from the smart contract
-const [loadingNfts, setLoadingNfts] = useState(true);
-// Here we will store the existing NFT's from the collection.
-const [nfts, setNfts] = useState<NFTMetadataOwner[]>([]);
-```
+We'll be using the React SDK's `useNFTs` to fetch all of the NFTs in our collection.
 
 **Fetch All NFTS**:
 
-```ts
-// When the collection is loaded from the above useNFTCollection hook, we'll call getAll()
-// to get all the NFT's from the collection and store them in state.
-useEffect(() => {
-  if (nftCollection) {
-    (async () => {
-      const loadedNfts = await nftCollection.getAll();
-      setNfts(loadedNfts);
-      setLoadingNfts(false);
-    })();
-  }
-}, [nftCollection]);
+```tsx
+const { data: nfts, isLoading: loadingNfts } = useNFTs(nftCollection);
 ```
 
 Now we've got the NFT's loaded, we can display them to the user!
@@ -178,13 +157,13 @@ On the server-side API route, we can:
 
 **De-structure the arguments we passed in out of the request body**:
 
-```ts
+```tsx
 const { authorAddress, nftName, imagePath } = JSON.parse(req.body);
 ```
 
 **Initialize the Thirdweb SDK on the server-side**
 
-```ts
+```tsx
 const sdk = new ThirdwebSDK(
   new Wallet(
     // Your wallet private key (read it in from .env.local file)
@@ -197,16 +176,25 @@ const sdk = new ThirdwebSDK(
 
 **Load the NFT Collection via it's contract address using the SDK**
 
-```ts
+```tsx
 const nftCollection = sdk.getNFTCollection(
   // Replace this with your NFT Collection contract address
   "0x000000000000000000000000000000000000000"
 );
 ```
 
-**Example Check #1 - Check that this wallet doesn't already own an NFT in this collection**
+**Example Check #1 - Is the name of the NFT an animal name?**
 
-```ts
+```tsx
+if (!animalNames.includes(nftName?.toLowerCase())) {
+  res.status(400).json({ error: "That's not one of the animals we know!" });
+  return;
+}
+```
+
+**Example Check #2 - Check that this wallet doesn't already own an NFT in this collection**
+
+```tsx
 const hasMinted = (await nftCollection.balanceOf(authorAddress)).gt(0);
 if (hasMinted) {
   res.status(400).json({ error: "Already minted" });
@@ -214,19 +202,9 @@ if (hasMinted) {
 }
 ```
 
-**Example Check #2 - Check that there is less than 100 NFTs total**
-
-```ts
-const collectionFinished = (await nftCollection.totalSupply()).gt(100);
-if (collectionFinished) {
-  res.status(400).json({ error: "Max Supply Reached" });
-  return;
-}
-```
-
 **When we are satisfied with the NFT conditions, we can generate a signature to mint the NFT**
 
-```ts
+```tsx
 // This is to generate the page number based on how many pages have been minted already
 const pageNumber = (await nftCollection.totalSupply()).add(1);
 
@@ -246,7 +224,7 @@ const signedPayload = await nftCollection.signature.generate({
 
 **Return the signature to the client**
 
-```ts
+```tsx
 // Return back the signedPayload to the client.
 res.status(200).json({
   signedPayload: JSON.parse(JSON.stringify(signedPayload)),
@@ -255,10 +233,8 @@ res.status(200).json({
 
 If at any point this process fails or the request is not valid, we send back an error response instead of the generated signature.
 
-```ts
-res.status(500).json({
-  error: `The requested NFT does not meet the criteria to be minted.`,
-});
+```tsx
+res.status(500).json({ error: `Server error ${e}` });
 ```
 
 ## Making the API Request on the client
@@ -267,7 +243,7 @@ With our API route available, we make `fetch` requests to this API, and securely
 
 **Call the API route on the client**
 
-```ts
+```tsx
 // Make a request to /api/server
 const signedPayloadReq = await fetch(`/api/server`, {
   method: "POST",
@@ -284,13 +260,13 @@ const json = await signedPayloadReq.json();
 
 **Read the signature from the response**
 
-```ts
+```tsx
 const signedPayload = json.signedPayload;
 ```
 
 **Mint the NFT with the signature**
 
-```ts
+```tsx
 // Now we can call signature.mint and pass in the signed payload that we received from the server.
 const nft = await nftCollection?.signature.mint(signedPayload);
 ```
