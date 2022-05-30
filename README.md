@@ -164,13 +164,11 @@ const { authorAddress, nftName, imagePath } = JSON.parse(req.body);
 **Initialize the Thirdweb SDK on the server-side**
 
 ```tsx
-const sdk = new ThirdwebSDK(
-  new Wallet(
-    // Your wallet private key (read it in from .env.local file)
-    process.env.PRIVATE_KEY as string,
-    // Your RPC provider
-    ethers.getDefaultProvider("https://rpc-mumbai.matic.today/")
-  )
+// Initialize the Thirdweb SDK on the serverside
+const sdk = ThirdwebSDK.fromPrivateKey(
+  // Your wallet private key (read it in from .env.local file)
+  process.env.PRIVATE_KEY as string,
+  "mumbai"
 );
 ```
 

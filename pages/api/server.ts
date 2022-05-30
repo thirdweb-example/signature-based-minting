@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { ethers, Wallet } from "ethers";
 import type { NextApiRequest, NextApiResponse } from "next";
 import animalNames from "../../animalNames";
 
@@ -19,15 +18,10 @@ export default async function server(
     }
 
     // Initialize the Thirdweb SDK on the serverside
-    const sdk = new ThirdwebSDK(
-      new Wallet(
-        // Your wallet private key (read it in from .env.local file)
-        process.env.PRIVATE_KEY as string,
-        // Your RPC provider
-        ethers.getDefaultProvider(
-          "https://polygon-mumbai.g.alchemy.com/v2/ioUyv8HQHdNuHpL21sJDWMxB5tQaLCb2"
-        )
-      )
+    const sdk = ThirdwebSDK.fromPrivateKey(
+      // Your wallet private key (read it in from .env.local file)
+      process.env.PRIVATE_KEY as string,
+      "mumbai"
     );
 
     // Load the NFT Collection via it's contract address using the SDK
