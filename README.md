@@ -6,7 +6,7 @@ In this guide, we will utilize signature-based minting of NFTs to create a "comm
 
 By the end, we'll have an NFT collection of NFTs that are all animal names, as specified in the [animalNames.ts](animalNames.ts) file.
 
-**Check out the Demo here**: https://community-book-nft.vercel.app/
+**Check out the Demo here**: https://signature-based-minting.thirdweb-example.com/
 
 ## Tools:
 
