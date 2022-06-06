@@ -29,12 +29,6 @@ npx create-tw-app --example signature-based-minting
 
 - Add the `NEXT_PUBLIC_NFT_COLLECTION_ADDRESS` environment variable to your `.env.local` file too, in the form `NEXT_PUBLIC_NFT_COLLECTION_ADDRESS=xxx`, similarly to the `.env.example` file provided.
 
-- Run `npm install` to install the dependencies.
-
-- Run `npm run dev` to start the development server.
-
-- Visit http://localhost:3000/
-
 ## What is Signature Based Minting?
 
 NFT Collections come in different shapes, sizes, and rules.
