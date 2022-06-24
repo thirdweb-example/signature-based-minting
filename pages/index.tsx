@@ -79,7 +79,7 @@ const Home: NextPage = () => {
       // Upload image to IPFS using the sdk.storage
       const tw = new ThirdwebSDK(signer);
       const ipfsHash = await tw.storage.upload(file);
-      const url = `${ipfsHash}.${file.type.split("/")[1]}`;
+      const url = `${ipfsHash.uris[0]}.${file.type.split("/")[1]}`;
 
       // Make a request to /api/server
       const signedPayloadReq = await fetch(`/api/server`, {
