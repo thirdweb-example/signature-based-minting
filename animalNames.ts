@@ -62,6 +62,7 @@ const animalNames = [
   "rat",
   "ostrich",
   "peacock",
+  "wolf",
 ];
 
 export default animalNames;
