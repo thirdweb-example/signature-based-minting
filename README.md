@@ -20,7 +20,7 @@ By the end, we'll have an NFT collection of NFTs that are all animal names, as s
 - Create a project using this example by running:
 
 ```bash
-npx thirdweb create --example signature-based-minting
+npx thirdweb create --template signature-based-minting
 ```
 
 - Create your own NFT Collection via the thirdweb dashboard (follow the steps in **Setting Up The NFT Collection** of this doc if you need more help)
