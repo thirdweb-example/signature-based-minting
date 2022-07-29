@@ -4,7 +4,7 @@
 
 In this guide, we will utilize signature-based minting of NFTs to create a "community-built" NFT collection, where each user mints and owns their own NFT based on specific conditions that we provide.
 
-By the end, we'll have an NFT collection of NFTs that are all animal names, as specified in the [animalNames.ts](animalNames.ts) file.
+By the end, we'll have an NFT collection of NFTs that are all animal names, as specified in the [animalNames.ts](./animalNames.ts) file.
 
 **Check out the Demo here**: https://signature-based-minting.thirdweb-example.com/
 
@@ -43,7 +43,7 @@ Signature-based minting allows you to specify exactly what NFTs you allow to be 
 
 In this guide, we'll grant users signatures to mint NFTs into our collection that follow the format we expect.
 
-In the end, we'll have a community-made collection that only contains NFTs with animal names, by restricting the signatures we provide to only allow NFTs with one of our [animal names](animalNames.ts)!
+In the end, we'll have a community-made collection that only contains NFTs with animal names, by restricting the signatures we provide to only allow NFTs with one of our [animal names](./animalNames.ts)!
 
 Let's get into it!
 
@@ -99,7 +99,7 @@ import {
 
 We've attached these `connectWithMetamask` and `disconnectWallet` functions to the `onClick` to fire when the user clicks the `Connect` or `Disconnect` buttons.
 
-You can see an example of how to implement that logic in our [index.tsx file](pages/index.tsx)
+You can see an example of how to implement that logic in our [index.tsx file](./pages/index.tsx)
 
 ## Loading & Displaying NFTs
 
@@ -125,7 +125,7 @@ const { data: nfts, isLoading: loadingNfts } = useNFTs(nftCollection);
 
 Now we've got the NFT's loaded, we can display them to the user!
 
-We'll let you decide how best to display your NFTs, but if you're looking for an example, check out the [index.tsx file](pages/index.tsx) to see how we did it.
+We'll let you decide how best to display your NFTs, but if you're looking for an example, check out the [index.tsx file](./pages/index.tsx) to see how we did it.
 
 We can also see who is the owner of each nft with `.owner`, and the `metadata.name` and `metadata.description` inside of each NFT!
 
