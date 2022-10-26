@@ -1,7 +1,7 @@
-import "../styles/globals.css";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import type { NextApiRequest, NextApiResponse } from "next";
 import animalNames from "../../animalNames";
+import "../styles/globals.css";
 
 export default async function server(
   req: NextApiRequest,
@@ -25,9 +25,10 @@ export default async function server(
     );
 
     // Load the NFT Collection via it's contract address using the SDK
-    const nftCollection = sdk.getNFTCollection(
+    const nftCollection = await sdk.getContract(
       // Replace this with your NFT Collection contract address
-      process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS as string
+      process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS!,
+      'nft-collection'
     );
 
     // Here we can make all kinds of cool checks to see if the user is eligible to mint the NFT.
@@ -48,7 +49,6 @@ export default async function server(
     }
 
     // If all the checks pass, begin generating the signature...
-
     // Generate the signature for the page NFT
     const signedPayload = await nftCollection.signature.generate({
       to: authorAddress,
