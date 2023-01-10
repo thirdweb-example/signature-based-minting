@@ -9,7 +9,7 @@ export default async function server(
 ) {
   try {
     // De-structure the arguments we passed in out of the request body
-    const { authorAddress, nftName, imagePath } = JSON.parse(req.body);
+    const { authorAddress, nftName } = JSON.parse(req.body);
 
     // You'll need to add your private key in a .env.local file in the root of your project
     // !!!!! NOTE !!!!! NEVER LEAK YOUR PRIVATE KEY to anyone!
@@ -21,14 +21,14 @@ export default async function server(
     const sdk = ThirdwebSDK.fromPrivateKey(
       // Your wallet private key (read it in from .env.local file)
       process.env.PRIVATE_KEY as string,
-      "mumbai"
+      "goerli"
     );
 
     // Load the NFT Collection via it's contract address using the SDK
     const nftCollection = await sdk.getContract(
       // Replace this with your NFT Collection contract address
       process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS!,
-      'nft-collection'
+      "nft-collection"
     );
 
     // Here we can make all kinds of cool checks to see if the user is eligible to mint the NFT.
@@ -54,7 +54,6 @@ export default async function server(
       to: authorAddress,
       metadata: {
         name: nftName as string,
-        image: imagePath as string,
         description: "An awesome animal NFT",
         properties: {
           // Add any properties you want to store on the NFT

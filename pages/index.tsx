@@ -4,15 +4,13 @@ import {
   useAddress,
   useContract,
   useNFTs,
-  useStorageUpload,
   Web3Button,
 } from "@thirdweb-dev/react";
 import type { NextPage } from "next";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const Home: NextPage = () => {
   const address = useAddress();
-  const { mutateAsync: upload } = useStorageUpload();
 
   // Fetch the NFT collection from thirdweb via it's contract address.
   const { contract: nftCollection } = useContract(
@@ -21,50 +19,22 @@ const Home: NextPage = () => {
     "nft-collection"
   );
 
-  // Here we store the user inputs for their NFT.
-  const [nftName, setNftName] = useState<string>("");
-  const [file, setFile] = useState<File>();
-
+  // Load all the minted NFTs in the collection
   const { data: nfts, isLoading: loadingNfts } = useNFTs(nftCollection);
 
-  // Magic to get the file upload even though its hidden
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Function to store file in state when user uploads it
-  const uploadFile = () => {
-    if (fileInputRef?.current) {
-      fileInputRef.current.click();
-
-      fileInputRef.current.onchange = () => {
-        if (fileInputRef?.current?.files?.length) {
-          const file = fileInputRef.current.files[0];
-          setFile(file);
-        }
-      };
-    }
-  };
+  // Here we store the user inputs for their NFT.
+  const [nftName, setNftName] = useState<string>("");
 
   // This function calls a Next JS API route that mints an NFT with signature-based minting.
   // We send in the address of the current user, and the text they entered as part of the request.
   const mintWithSignature = async () => {
     try {
-      if (!file || !nftName) {
-        alert("Please enter a name and upload a file.");
-        return;
-      }
-
-      // Upload image to IPFS using Storage
-      const uris = await upload({
-        data: [file],
-      });
-
       // Make a request to /api/server
       const signedPayloadReq = await fetch(`/api/server`, {
         method: "POST",
         body: JSON.stringify({
           authorAddress: address, // Address of the current user
-          nftName: nftName,
-          imagePath: uris[0],
+          nftName: nftName || "",
         }),
       });
 
@@ -130,34 +100,7 @@ const Home: NextPage = () => {
           maxLength={26}
           onChange={(e) => setNftName(e.target.value)}
         />
-
-        {file ? (
-          <img
-            src={URL.createObjectURL(file)}
-            style={{ cursor: "pointer", maxHeight: 250, borderRadius: 8 }}
-            onClick={() => setFile(undefined)}
-          />
-        ) : (
-          <div
-            className={styles.imageInput}
-            onClick={uploadFile}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              e.preventDefault();
-              setFile(e.dataTransfer.files[0]);
-            }}
-          >
-            Drag and drop an image here to upload it!
-          </div>
-        )}
       </div>
-      <input
-        type="file"
-        accept="image/png, image/gif, image/jpeg"
-        id="profile-picture-input"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-      />
 
       <div style={{ marginTop: 24 }}>
         <Web3Button
@@ -179,17 +122,8 @@ const Home: NextPage = () => {
           <div className={styles.nftGrid}>
             {nfts?.map((nft) => (
               <div className={styles.nftItem} key={nft.metadata.id.toString()}>
-                <div>
-                  <ThirdwebNftMedia
-                    metadata={nft.metadata}
-                    style={{
-                      height: 90,
-                      borderRadius: 16,
-                    }}
-                  />
-                </div>
                 <div style={{ textAlign: "center" }}>
-                  <p>Named</p>
+                  <p>Name</p>
                   <p>
                     <b>{nft.metadata.name}</b>
                   </p>
