@@ -41,7 +41,7 @@ const animalNames = [
   "seahorse",
   "snake",
   "spider",
-  "squirrel"
+  "squirrel",
   "starfish",
   "stingray",
   "tiger",
