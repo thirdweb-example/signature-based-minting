@@ -64,14 +64,14 @@ To get started, we have a ready-made template that includes all the code you nee
 Our application is wrapped in a Thirdweb Provider so that we can access Thirdweb anywhere in our application:
 
 ```tsx
-import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
+import { ThirdwebProvider } from "@thirdweb-dev/react";
 
-// This is the chainId your dApp will work on.
-const activeChainId = ChainId.Mumbai;
+// This is the chain your dApp will work on.
+const activeChain = "goerli";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThirdwebProvider desiredChainId={activeChainId}>
+    <ThirdwebProvider activeChain={activeChain}>
       <Component {...pageProps} />
     </ThirdwebProvider>
   );
