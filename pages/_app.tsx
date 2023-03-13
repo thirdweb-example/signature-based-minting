@@ -1,6 +1,5 @@
-import React from "react";
+import { ThirdwebProvider } from "@thirdweb-dev/react";
 import type { AppProps } from "next/app";
-import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
 import Head from "next/head";
 import ThirdwebGuideFooter from "../components/guide/ThirdwebGuideFooter";
 import "./styles/globals.css";
