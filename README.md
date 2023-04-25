@@ -141,7 +141,7 @@ The way that our signature-based minting process works is in 3 steps:
 
 3. Once the API function is done processing, it sends the client/user a signature. The user can call `mint` with this signature to create an NFT with the conditions provided from our server.
 
-The main benefit here is that we have made an environment where us (the owner of the smart contract) can decide what the user can mint into our collection, all programmatically.
+The main benefit here is that we now have an environment where we (the owner of the smart contract) can decide what the user can mint into our collection, all programmatically.
 
 ## API Route
 
