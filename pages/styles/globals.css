@@ -38,6 +38,7 @@ body {
   display: flex;
   margin: 0;
   text-align: center;
+  overflow-x: hidden;
 }
 
 h2 {

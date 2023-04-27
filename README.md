@@ -25,9 +25,10 @@ npx thirdweb create --template signature-based-minting
 
 - Create your own NFT Collection via the thirdweb dashboard (follow the steps in **Setting Up The NFT Collection** of this doc if you need more help)
 
+- Add your contract address to the `const/yourDetails.ts` file, in the form `export const NFT_COLLECTION_ADDRESS = "xxx";`.
+
 - Create an environment variable in a `.env.local` file with your private key, in the form `PRIVATE_KEY=xxx`, similarly to the `.env.example` file provided.
 
-- Add the `NEXT_PUBLIC_NFT_COLLECTION_ADDRESS` environment variable to your `.env.local` file too, in the form `NEXT_PUBLIC_NFT_COLLECTION_ADDRESS=xxx`, similarly to the `.env.example` file provided.
 
 ## What is Signature Based Minting?
 
