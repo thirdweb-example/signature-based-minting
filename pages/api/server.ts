@@ -2,6 +2,7 @@ import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import type { NextApiRequest, NextApiResponse } from "next";
 import animalNames from "../../animalNames";
 import "../styles/globals.css";
+import { NFT_COLLECTION_ADDRESS } from "../../const/yourDetails";
 
 export default async function server(
   req: NextApiRequest,
@@ -26,8 +27,8 @@ export default async function server(
 
     // Load the NFT Collection via it's contract address using the SDK
     const nftCollection = await sdk.getContract(
-      // Replace this with your NFT Collection contract address
-      process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS!,
+      // Use your NFT_COLLECTION_ADDRESS constant
+      NFT_COLLECTION_ADDRESS,
       "nft-collection"
     );
 
