@@ -8,7 +8,7 @@ import {
 } from "@thirdweb-dev/react";
 import type { NextPage } from "next";
 import { useState } from "react";
-import { NFT_COLLECTION_ADDRESS } from '../const/yourDetails';
+import { NFT_COLLECTION_ADDRESS } from "../const/yourDetails";
 
 const Home: NextPage = () => {
   const address = useAddress();
@@ -18,7 +18,6 @@ const Home: NextPage = () => {
     NFT_COLLECTION_ADDRESS,
     "nft-collection"
   );
-
 
   // Load all the minted NFTs in the collection
   const { data: nfts, isLoading: loadingNfts } = useNFTs(nftCollection);
@@ -105,7 +104,7 @@ const Home: NextPage = () => {
 
       <div style={{ marginTop: 24 }}>
         <Web3Button
-          contractAddress={process.env.NEXT_PUBLIC_NFT_COLLECTION_ADDRESS!}
+          contractAddress={NFT_COLLECTION_ADDRESS}
           action={() => mintWithSignature()}
         >
           Mint NFT
