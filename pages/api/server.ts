@@ -14,15 +14,18 @@ export default async function server(
 
     // You'll need to add your private key in a .env.local file in the root of your project
     // !!!!! NOTE !!!!! NEVER LEAK YOUR PRIVATE KEY to anyone!
-    if (!process.env.PRIVATE_KEY) {
-      throw new Error("You're missing PRIVATE_KEY in your .env.local file.");
+    if (!process.env.WALLET_PRIVATE_KEY) {
+      throw new Error(
+        "You're missing WALLET_PRIVATE_KEY in your .env.local file."
+      );
     }
 
-    // Initialize the Thirdweb SDK on the serverside
+    // Initialize the Thirdweb SDK on the server side
     const sdk = ThirdwebSDK.fromPrivateKey(
       // Your wallet private key (read it in from .env.local file)
-      process.env.PRIVATE_KEY as string,
-      "goerli"
+      process.env.WALLET_PRIVATE_KEY as string,
+      "goerli",
+      { secretKey: process.env.TW_SECRET_KEY }
     );
 
     // Load the NFT Collection via it's contract address using the SDK
